@@ -1,0 +1,18 @@
+﻿body {
+    margin:20px;
+}
+
+#map {
+    height: 750px;
+    width: 1900px;
+}
+
+.position {
+    margin: 5px;
+    margin-left: 20px;
+}
+
+.btn-success-save {
+    padding: 15px;
+    margin-left: 20px;
+}

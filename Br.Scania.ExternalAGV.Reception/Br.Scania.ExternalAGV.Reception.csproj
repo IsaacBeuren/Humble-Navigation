@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CoordinateSharp" Version="1.1.5.2" />
+    <PackageReference Include="EasyNetQ" Version="3.6.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Br.Scania.ExternalAGV.Business\Br.Scania.ExternalAGV.Business.csproj" />
+    <ProjectReference Include="..\Br.Scania.ExternalAGV.Model\Br.Scania.ExternalAGV.Model.csproj" />
+  </ItemGroup>
+
+</Project>

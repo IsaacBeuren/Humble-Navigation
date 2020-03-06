@@ -1,0 +1,59 @@
+﻿
+@{
+    ViewData["Title"] = "Chamadas";
+}
+
+<link href="~/css/calls.css" rel="stylesheet" />
+
+
+<h1>Chamadas</h1>
+<br />
+<div class="row">
+    <div class="col-lg-2" style="border:solid;">
+        <table class="table table-hover" id="tableCode">
+            <thead>
+                <tr>
+                    <th><h4>Código (CU)</h4></th>
+                </tr>
+            </thead>
+            <tbody id="codCU"></tbody>
+        </table>
+    </div>
+    <div class="col-lg-2" style="border:solid">
+        <table class="table table-hover" id="tableRoute">
+            <thead>
+                <tr>
+                    <th><h4>Rota</h4></th>
+                </tr>
+            </thead>
+            <tbody id="route"></tbody>
+        </table>
+    </div>
+    <div class="col-lg-2" style="border:solid">
+        <table class="table table-hover" id="tableItem">
+            <thead>
+                <tr>
+                    <th><h4>Item</h4></th>
+                </tr>
+            </thead>
+            <tbody id="item"></tbody>
+        </table>
+    </div>
+    <div class="col-lg-2" style="border:solid">
+        <table class="table table-hover" id="tableStart">
+            <thead>
+                <tr>
+                    <th>
+                        <h4> &nbsp</h4>
+                    </th>
+                </tr>
+            </thead>
+            <tbody id="start"></tbody>
+        </table>
+    </div>
+</div>
+
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<script src="~/js/calls.js"></script>
+<script type="text/javascript" src="~/lib/amplify-1.1.2/individual/amplify.core.js"></script>
+<script type="text/javascript" src="~/lib/amplify-1.1.2/individual/amplify.store.js"></script>

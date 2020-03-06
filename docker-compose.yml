@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  br.scania.externalagv.dockercron:
+    image: ${DOCKER_REGISTRY-}brscaniaexternalagvdockercron
+    build:
+      context: .
+      dockerfile: Br.Scania.ExternalAGV.DockerCron/Dockerfile

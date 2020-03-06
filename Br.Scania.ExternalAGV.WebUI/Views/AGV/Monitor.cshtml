@@ -1,0 +1,28 @@
+﻿@{
+    ViewData["Title"] = "Monitoramento de Rota";
+}
+
+<link href="~/css/monitor.css" rel="stylesheet" />
+<link href="~/css/leaflet.css" rel="stylesheet" />
+<link href="~/css/leaflet_awesome_number_markers.css" rel="stylesheet" />
+<link href="~/css/site.css" rel="stylesheet" />
+
+<div class="row">
+    <div class="col-3" style="overflow-y: auto; border:solid;" >
+        <table class="table table-hover" id="bodyTabelaRoute">
+            <thead>
+                <tr>
+                    <th><h4>Descrição</h4></th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+        <div id="button-update"></div>
+    </div>
+    <div style="overflow-y: auto;" id="map"></div>
+</div>
+
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<script src="~/lib/leaflet/leaflet-0.7.3.js"></script>
+<script src="~/js/leaflet_awesome_number_markers.js"></script>
+<script src="~/js/monitor.js"></script>

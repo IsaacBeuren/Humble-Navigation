@@ -1,0 +1,632 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<style>
+    .map {
+        height: 700px;
+        width: 1800px;
+        margin: 0;
+        margin-top: 0px;
+        margin-right: 0px;
+        margin-bottom: 0px;
+        margin-left: -350px;
+    }
+
+    #map {
+        position: relative;
+    }
+
+    .full-height {
+        height: 100%;
+    }
+
+    body {
+        margin: 0;
+        margin-top: 0px;
+        margin-right: 0px;
+        margin-bottom: 0px;
+        margin-left: 30px;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: 1.5;
+        color: #212529;
+        text-align: left;
+        background-color: #fff;
+    }
+
+    #block_container {
+        display: flex;
+    }
+
+    #bloc1, #bloc2, #bloc3, #bloc4 {
+        display: inline;
+    }
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/openlayers/4.6.5/ol-debug.js" type="text/javascript"></script>
+<script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=requestAnimationFrame,Element.prototype.classList,URL"></script>
+<link rel="stylesheet" href="https://openlayers.org/en/v5.3.0/css/ol.css" type="text/css">
+<script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=requestAnimationFrame,Element.prototype.classList,URL"></script>
+<script src="https://code.jquery.com/jquery-2.2.3.min.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+<div class="">
+
+    <div id="block_container" align="center">
+        <div id="bloc1" align="left">
+            <h4><b>Velocidade atribuída: &nbsp </b><span id="velocityAGV"></span> &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp</h4>
+            <h4><b>Qualidade do GPS:  &nbsp </b><span id="gpsQuality"></span> &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp</h4>
+        </div>
+        <div id="bloc2" align="left">
+            <h4><b>Hora de Início :  &nbsp </b><span id="initialTime"></span> &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp</h4>
+            <h4><b>Hora de Chegada:  &nbsp </b><span id="endTime"></span> &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp</h4>
+        </div>
+        <div id="bloc3" align="left">
+            <h4><b>Próximo Ponto: &nbsp </b><span id="nextPoint"></span> &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp</h4>
+            <h4><b>Último Ponto: &nbsp </b><span id="lastPoint"></span> &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp</h4>
+        </div>
+        <div id="bloc4" align="left">
+            <h4><b>AGV ID: &nbsp </b><span id="AGVid"></span></h4>
+            <h4><b>Rota: &nbsp </b><span id="route"></span></h4>
+        </div>
+    </div>
+    <br>
+
+    <div class="body">
+        <div id="map" class="map">
+
+        </div>
+
+        <link rel="stylesheet" href="https://openlayers.org/en/v5.3.0/css/ol.css" type="text/css">
+        <!-- The line below is only needed for old environments like Internet Explorer and Android 4.x -->
+
+    </div>
+
+
+</div>
+
+
+<script type='module'>
+
+
+
+
+    //import Overlay from '/ol/Overlay.js';
+    var locAGV = [];
+    var container = document.getElementById('popup');
+    var i = 0;
+    var markerVectorLayer;
+    var locAGV = [];
+    var k = 0;
+    var linie2 = [];
+    var linie2_2 = [];
+    var linie2Unique1;
+    var linie2Unique2;
+    var lastPositionGetAll;
+    var urlAGVDown = 'https://i.imgur.com/D1TPX6H.png';
+    var urlAGVLeft = 'https://i.imgur.com/br9w78S.png';
+    var urlAGVRight = 'https://i.imgur.com/3JNxi5h.png';
+    var urlAGVUp = 'https://i.imgur.com/n5M4vaL.png';
+    var urlAGV = urlAGVLeft;
+    var FinalPointMarkerVectorLayer3;
+    var markerVectorNextPointLayer;
+
+    var velocityAGV;
+    var gpsQuality;
+    var initialTime = "--";
+    var currentTime;
+    var endTime = "--";
+    var nextPoint = "--";
+    var lastPoint = "--";
+    var AGVid;
+    var isLoaded = false;
+    var route;
+    var middlePoint = [];
+    var points;
+
+    //var overlay = new Overlay({
+    //    element: container,
+    //    autoPan: true,
+    //    autoPanAnimation: {
+    //        duration: 250
+    //    }
+    //});
+
+
+
+
+    function convertDM2DMS(value) {
+        var latArray = value.toString().split(".");
+        var degree = parseFloat(latArray[0].substring(0, 3));
+        var minute = parseFloat(latArray[0].substring(3, 5) + "." + latArray[1]) / 60;
+        var ret;
+        if (degree > 0) {
+            ret = degree + minute;
+        }
+        else {
+            ret = degree - minute;
+        }
+        return ret;
+    }
+
+
+
+
+    // Inicia o Mapa
+    var map = new ol.Map({
+        //overlays: [overlay]
+    });
+    map.setTarget('map');
+    var view = new ol.View({
+        projection: 'EPSG:4326',
+        center: [-46.565928, -23.712321],
+        zoom: 0,
+        maxResolution: 0.703125
+    })
+    map.setView(view);
+    var tile_layer = new ol.layer.Tile({
+        source: new ol.source.OSM({ layer: 'osm' })
+    })
+
+    // Inicia o Mapa em uma posição setada
+
+    map.addLayer(tile_layer);
+    map.getView().setZoom(17.5);
+
+
+
+
+
+
+
+
+    //Return the coordenates of the clicked pixel
+    map.on('click', function (evt) {
+        console.log("coor: " + evt.coordinate);
+    });
+
+    //Add the route start, middle and finish symbol to the map
+    $.ajax({
+        url: 'http://agv-api.eu-west-1.elasticbeanstalk.com/api/Points/GetAll',
+        type: "GET",
+        success: function (response) {
+
+            points = response;
+            route = response[0].idRoute;
+        }
+
+        //Getting the route information
+    }).then(function () {
+
+        $.ajax({
+            url: 'http://agv-api.eu-west-1.elasticbeanstalk.com/api/Route/GetAGVByID?ID=' + route,
+            type: "GET",
+            success: function (response2) {
+
+                var initialPoint = [convertDM2DMS(points[0].lng), convertDM2DMS(points[0].lat) - 0.00002];
+
+                console.log("route: " + JSON.stringify(response2));
+                console.log("p: " + response2.pickUpPoint.replace(new RegExp(" ", 'g'), "") + "!");
+
+                for (var x = 0; x < points.length; x++) {
+                    console.log("point: " + points[x].description + "!");
+                    if (points[x].description == response2.pickUpPoint.replace(new RegExp(" ", 'g'), "")) {
+                        middlePoint = [convertDM2DMS(points[x].lng) + 0.00012, convertDM2DMS(points[x].lat)];
+                        break;
+                    }
+                }
+                var finalPoint = [convertDM2DMS(points[points.length - 1].lng), convertDM2DMS(points[points.length - 1].lat)];
+
+
+                console.log("middle: " + middlePoint[0]);
+
+                var iconInitialPointGeometry = new ol.geom.Point(ol.proj.fromLonLat(initialPoint, 'EPSG:4326', 'EPSG:3857'));
+                var iconMiddlePointGeometry = new ol.geom.Point(ol.proj.fromLonLat(middlePoint, 'EPSG:4326', 'EPSG:3857'));
+                var iconFinalPointGeometry = new ol.geom.Point(ol.proj.fromLonLat(finalPoint, 'EPSG:4326', 'EPSG:3857'));
+
+                var iconInitialPointFeature = new ol.Feature({
+                    geometry: iconInitialPointGeometry
+                });
+                var iconMiddlePointFeature = new ol.Feature({
+                    geometry: iconMiddlePointGeometry
+                });
+                var iconFinalPointFeature = new ol.Feature({
+                    geometry: iconFinalPointGeometry
+                });
+
+                var iconInitialPointStyle = new ol.style.Style({
+                    image: new ol.style.Icon(({
+                        //anchor:[0.5, 1],
+                        scale: 1,
+                        opacity: 1,
+                        src: 'https://i.imgur.com/fChCn7L.png'
+                    }))
+                });
+
+                var iconMiddlePointStyle = new ol.style.Style({
+                    image: new ol.style.Icon(({
+                        //anchor:[0.5, 1],
+                        scale: 1,
+                        opacity: 1,
+                        src: 'https://i.imgur.com/1zYEA8h.png'
+                    }))
+                });
+
+                var iconFinalPointStyle = new ol.style.Style({
+                    image: new ol.style.Icon(({
+                        //anchor:[0.5, 1],
+                        scale: 1,
+                        opacity: 1,
+                        src: 'https://i.imgur.com/2uU8ClW.png'
+                    }))
+                });
+
+                iconInitialPointFeature.setStyle(iconInitialPointStyle);
+                iconMiddlePointFeature.setStyle(iconMiddlePointStyle);
+                iconFinalPointFeature.setStyle(iconFinalPointStyle);
+
+                var InitialPointVectorSource = new ol.source.Vector({
+                    features: [iconInitialPointFeature]
+                });
+                var MiddlePointVectorSource = new ol.source.Vector({
+                    features: [iconMiddlePointFeature]
+                });
+                var FinalPointVectorSource = new ol.source.Vector({
+                    features: [iconFinalPointFeature]
+                });
+
+                var InitialPointMarkerVectorLayer = new ol.layer.Vector({
+                    source: InitialPointVectorSource,
+                });
+                var MiddlePointMarkerVectorLayer = new ol.layer.Vector({
+                    source: MiddlePointVectorSource,
+                });
+                FinalPointMarkerVectorLayer3 = new ol.layer.Vector({
+                    source: FinalPointVectorSource,
+                });
+
+
+                map.addLayer(InitialPointMarkerVectorLayer);
+                map.addLayer(MiddlePointMarkerVectorLayer);
+                map.addLayer(FinalPointMarkerVectorLayer3);
+
+
+                route = response2.description;
+            }
+        });
+
+    }).then(function () {
+
+        //Starting the loop
+        window.setInterval(function () {
+
+            console.log("new interval");
+
+            //Getting the AGV last position
+            $.ajax({
+                url: 'http://agv-api.eu-west-1.elasticbeanstalk.com/api/LastPosition/GetAll',
+                type: "GET",
+                success: function (response) {
+
+                    //Estimating the direction (north/south/east/west) to add the AGV icon accordingly
+                    var difLON = locAGV[0] - convertDM2DMS(response[0].longitude);
+                    var difLAT = locAGV[1] - convertDM2DMS(response[0].latitude);
+                    console.log("diflon: " + difLON + " diflat: " + difLAT);
+
+                    if ((Math.abs(difLAT) > Math.abs(difLON)) && Math.abs(difLAT) > 0.000002) {
+                        if (difLAT > 0) { urlAGV = urlAGVDown; }
+                        else { urlAGV = urlAGVUp; }
+                    } else if (Math.abs(difLON) > 0.000002) {
+                        if (difLON > 0) { urlAGV = urlAGVLeft; }
+                        else { urlAGV = urlAGVRight; }
+                    }
+
+
+                    locAGV = [convertDM2DMS(response[0].longitude), convertDM2DMS(response[0].latitude)];   //+0.1894
+                    console.log("Lonlat: " + locAGV[0] + "  -  " + locAGV[1]);
+                    currentTime = response[0].updateTime;
+                    gpsQuality = response[0].gpsQuality;
+                    AGVid = response[0].idagv;
+                }
+            }).then(function () {
+
+                //Adding the route to the map
+                $.ajax({
+                    url: 'http://agv-api.eu-west-1.elasticbeanstalk.com/api/Points/GetAll',
+                    type: "GET",
+                    success: function (response) {
+
+                        //Setting the time when the AGV passed through the first and last point
+                        if (response[0].done == true && response[1].done == false) { initialTime = currentTime; }
+                        if (response[response.length - 1].done == true) { endTime = currentTime; }
+
+                        //Removing the route of the last loop
+                        linie2.forEach(function (value, index, array) {
+                            if (value != null) {
+                                map.removeLayer(array[index]);
+                            }
+                        });
+                        linie2_2.forEach(function (value, index, array) {
+                            if (value != null) {
+                                map.removeLayer(array[index]);
+                            }
+                        });
+                        try {
+                            map.removeLayer(linie2Unique1);
+                            map.removeLayer(linie2Unique2);
+                        }
+                        catch (err) {
+                            console.log("error remove layer");
+                        }
+
+                        //Passing through each point to draw the route
+                        for (var j = 0; j < response.length; j++) {
+
+                            //If the AGV has passed through this point, draw the route in blue
+
+                            if (response[j].done == true) {
+
+                                if (j != 0) {
+
+                                    var lonlat = [convertDM2DMS(response[j - 1].lng), convertDM2DMS(response[j - 1].lat)];
+                                    var location2 = [convertDM2DMS(response[j].lng), convertDM2DMS(response[j].lat)];
+                                    var linie2style = [
+                                        // linestring
+                                        new ol.style.Style({
+                                            stroke: new ol.style.Stroke({
+                                                color: '#0000cc',
+                                                width: 2
+                                            })
+                                        })
+                                    ];
+
+                                    linie2[j] = new ol.layer.Vector({
+                                        source: new ol.source.Vector({
+                                            features: [new ol.Feature({
+                                                geometry: new ol.geom.LineString([lonlat, location2]),
+                                                name: 'Line',
+                                            })]
+                                        })
+                                    });
+
+                                    linie2[j].setStyle(linie2style);
+                                    map.addLayer(linie2[j]);
+                                }
+
+                                //The AGV has NOT passed through this point
+                            } else {
+
+                                if (j != 0) {
+
+
+                                    //This is the last poinst the AGV has passed throught
+                                    if (response[j - 1].done == true) {
+
+                                        //Draw a blue line connecting the AGV to the last point that he has passed through
+                                        lastPoint = response[j - 1].description;
+                                        nextPoint = response[j].description;
+                                        velocityAGV = response[j].velocity;  //This point has the AGV actual velocity information
+
+                                        if (lastPoint.charAt(2) == "4") { isLoaded = true; } else { isLoaded = false; }
+                                        var lonlat = [convertDM2DMS(response[j - 1].lng), convertDM2DMS(response[j - 1].lat)];
+                                        var location2 = locAGV;
+
+                                        var linie2style = [
+                                            new ol.style.Style({
+                                                stroke: new ol.style.Stroke({
+                                                    color: '#0000cc',
+                                                    width: 2
+                                                })
+                                            })
+                                        ];
+                                        linie2Unique1 = new ol.layer.Vector({
+                                            source: new ol.source.Vector({
+                                                features: [new ol.Feature({
+                                                    geometry: new ol.geom.LineString([lonlat, location2]),
+                                                    name: 'Line',
+                                                })]
+                                            })
+                                        });
+
+
+
+                                        //Draw a green line connecting the AGV to the next point that he will pass through
+                                        linie2Unique1.setStyle(linie2style);
+                                        lonlat = locAGV;
+                                        location2 = [convertDM2DMS(response[j].lng), convertDM2DMS(response[j].lat)];
+
+                                        linie2style = [
+                                            // linestring
+                                            new ol.style.Style({
+                                                stroke: new ol.style.Stroke({
+                                                    color: '#13A903',
+                                                    width: 2
+                                                })
+                                            })
+                                        ];
+
+                                        linie2Unique2 = new ol.layer.Vector({
+                                            source: new ol.source.Vector({
+                                                features: [new ol.Feature({
+                                                    geometry: new ol.geom.LineString([lonlat, location2]),
+                                                    name: 'Line',
+                                                })]
+                                            })
+                                        });
+
+                                        linie2Unique2.setStyle(linie2style);
+
+
+                                        //Add a pin icon in the next point the AGV will pass through
+                                        var iconNextPointGeometry = new ol.geom.Point(ol.proj.fromLonLat(location2, 'EPSG:4326', 'EPSG:3857'));
+                                        var iconNextPointFeature = new ol.Feature({
+                                            geometry: iconNextPointGeometry
+                                        });
+
+
+                                        var iconNextPointkStyle = new ol.style.Style({
+                                            image: new ol.style.Icon(({
+                                                //anchor:[0.5, 1],
+                                                scale: 1,
+                                                opacity: 1,
+                                                src: 'https://i.imgur.com/2uU8ClW.png'
+                                            }))
+                                        });
+
+
+                                        iconNextPointFeature.setStyle(iconNextPointkStyle);
+
+                                        var vectorNextPointSource = new ol.source.Vector({
+                                            features: [iconNextPointFeature]
+                                        });
+
+                                        map.removeLayer(markerVectorNextPointLayer);
+
+                                        markerVectorNextPointLayer = new ol.layer.Vector({
+                                            source: vectorNextPointSource,
+                                        });
+
+
+                                        //try {
+                                        map.addLayer(linie2Unique1);
+                                        map.addLayer(linie2Unique2);
+                                        //map.addLayer(markerVectorNextPointLayer);
+                                        //}
+                                        //catch (err) {
+                                        //    console.log("error add layer");
+                                        //}
+
+                                        //This is next points the AGV will pass through
+                                    } else {
+
+                                        //Draw a green line between the points that the AGV will pass through
+                                        var lonlat = [convertDM2DMS(response[j - 1].lng), convertDM2DMS(response[j - 1].lat)];
+                                        var location2 = [convertDM2DMS(response[j].lng), convertDM2DMS(response[j].lat)];
+                                        var linie2style = [
+                                            // linestring
+                                            new ol.style.Style({
+                                                stroke: new ol.style.Stroke({
+                                                    color: '#13A903',
+                                                    width: 2
+                                                })
+                                            })
+                                        ];
+
+                                        linie2_2[j] = new ol.layer.Vector({
+                                            source: new ol.source.Vector({
+                                                features: [new ol.Feature({
+                                                    geometry: new ol.geom.LineString([lonlat, location2]),
+                                                    name: 'Line',
+                                                })]
+                                            })
+                                        });
+
+                                        linie2_2[j].setStyle(linie2style);
+                                        map.addLayer(linie2_2[j]);
+
+                                    }
+                                } else {
+                                    lastPoint = null;
+                                    nextPoint = response[0].description;
+                                }
+                            }
+                        }
+
+
+
+                        //add the AGV icon to the map
+                        var iconScaniaGeometry = new ol.geom.Point(ol.proj.fromLonLat(locAGV, 'EPSG:4326', 'EPSG:3857'));
+                        var iconScaniaFeature = new ol.Feature({
+                            geometry: iconScaniaGeometry
+                        });
+
+
+                        var iconScaniakStyle = new ol.style.Style({
+                            image: new ol.style.Icon(({
+                                //anchor:[0.5, 1],
+                                scale: 1,
+                                opacity: 1,
+                                src: urlAGV//'http://tracker-tracer.s3-eu-west-1.amazonaws.com/Pictures/Idling.JPG'
+                            }))
+                        });
+
+
+                        iconScaniaFeature.setStyle(iconScaniakStyle);
+
+                        var vectorSource = new ol.source.Vector({
+                            features: [iconScaniaFeature]
+                        });
+
+
+                        map.removeLayer(markerVectorLayer);
+
+                        markerVectorLayer = new ol.layer.Vector({
+                            source: vectorSource,
+                        });
+
+                        map.addLayer(markerVectorLayer);
+                        map.removeLayer(FinalPointMarkerVectorLayer3);
+                        map.addLayer(FinalPointMarkerVectorLayer3);
+                        console.log(" --- 12----");
+
+                        //try {
+
+                        ////console.log("error 123");
+                        ////map.addLayer(linie2Unique1);
+                        ////map.addLayer(linie2Unique2);
+                        //}
+                        //catch (err) {
+                        //    console.log("error add layer");
+                        //}
+
+                    }
+                });
+            })
+
+            //Remove the information of the last loop
+            $("#velocityAGV").empty();
+            $("#gpsQuality").empty();
+            $("#initialTime").empty();
+            $("#endTime").empty();
+            $("#nextPoint").empty();
+            $("#lastPoint").empty();
+            $("#AGVid").empty();
+            $("#route").empty();
+
+            //Converting the time
+            var initialTimeArray = ["--"];
+            if (initialTime != "--") {
+                var initialTimeArray = initialTime.split("T");
+                initialTimeArray = initialTimeArray[1].split(".");
+            }
+            var endTimeArray = ["--"];
+            if (endTime != "--") {
+                var endTimeArray = endTime.split("T");
+                endTimeArray = endTimeArray[1].split(".");
+            }
+
+            if (typeof velocityAGV === 'undefined') {
+                velocityAGV = 2;
+            }
+            if (lastPoint == null) {
+                lastPoint = "--";
+            }
+            //Adding the information of the this loop
+            $("#velocityAGV").append(velocityAGV + " km/h");
+            $("#gpsQuality").append(gpsQuality);
+            $("#initialTime").append(initialTimeArray[0]);
+            $("#endTime").append(endTimeArray[0]);
+            $("#nextPoint").append(nextPoint);
+            $("#lastPoint").append(lastPoint);
+            $("#AGVid").append(AGVid);
+            $("#route").append(route);
+
+        }, 1000);
+
+
+    });
+
+
+</script>

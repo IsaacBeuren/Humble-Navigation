@@ -1,0 +1,33 @@
+﻿
+@{
+    ViewData["Title"] = "Points";
+}
+
+<link href="~/css/pointsRegister.css" rel="stylesheet" />
+<link href="~/css/leaflet.css" rel="stylesheet" />
+
+<div class="row">
+    <div id="map"></div>
+    <div>
+        <button class="btnSave" hidden>Salvar</button>
+        <table class="table table-hover" id="bodyTabela">
+            <thead>
+                <tr>
+                    <th><h4>ID</h4></th>
+                    <th><h4>Latitude</h4></th>
+                    <th><h4>Longitude</h4></th>
+                    <th><h4>Veloc</h4></th>
+                    <th><h4>Troca</h4></th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+
+
+
+
+
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<script src="~/js/points.js"></script>

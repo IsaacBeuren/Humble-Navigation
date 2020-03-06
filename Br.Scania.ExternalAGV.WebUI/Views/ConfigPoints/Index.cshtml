@@ -1,0 +1,151 @@
+﻿@{
+    ViewData["Title"] = "Gravação de Pontos";
+}
+
+<link href="~/css/configPoints.css" rel="stylesheet" />
+<link href="~/css/leaflet.css" rel="stylesheet" />
+<link href="~/css/leaflet_awesome_number_markers.css" rel="stylesheet" />
+<link href="~/css/site.css" rel="stylesheet" />
+
+
+<div class="row">
+    <div id="map"></div>
+    <div>
+        <div>
+            <div class="row">
+                <div>
+                    <button type="button" class="btn btn-success btn-success-save" id="btn-insert-point">Criar Novo</button>
+                </div>
+                <div class="position">
+                    <div class="row">
+                        <div style="width:100px">Latitude:</div>
+                        <div id="latValue">000000</div>
+                    </div>
+                    <div class="row">
+                        <div style="width:100px">Longitude:</div>
+                        <div id="lngValue">000000</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div>
+            <table class="table table-hover" id="bodyTabela">
+                <thead>
+                    <tr>
+                        <th><h4>Descrição</h4></th>
+                        <th><h4>Latitude</h4></th>
+                        <th><h4>Longitude</h4></th>
+                        <th><h4>Velocidade</h4></th>
+                        <th><h4>Seta</h4></th>
+                        <th><h4>Trajeto</h4></th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal modalLatLng fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="modalTitle">INSERT POINT</h4>
+            </div>
+            <input type="hidden" id="modal-id">
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <label class="col-md-4" for="tittle">Descrição</label>
+                        <input class="col-md-6 datetimepicker" id="modal-description" type="text">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <input class="col-md-6 datetimepicker" id="modal-lon" type="hidden">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <input class="col-md-6 datetimepicker" id="modal-lat" type="hidden">
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <label class="col-md-4" for="tittle">Corrigir Coord</label>
+                        <div class="form-check-inline">
+                            <label class="form-check-label">
+                                <input type="checkbox" class="form-check-input" id="update-coord" value:"false">
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <label class="col-md-4" for="tittle">Velocidade</label>
+                        <input class="col-md-6 datetimepicker" id="modal-velocity" type="text">
+                    </div>
+                </div>
+
+
+                @*<div class="row">
+                        <div class="col-md-12">
+                            <label class="col-md-4" for="tittle">Icon</label>
+                            <input class="col-md-6 datetimepicker" id="modal-icon" type="text">
+                        </div>
+                    </div>*@
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <label class="col-md-4" for="tittle">Seta</label>
+                        <div class="form-check-inline">
+                            <label class="form-check-label">
+                                <input type="checkbox" class="form-check-input" id="modal-leftlight" value:"true">Esquerda
+                            </label>
+                        </div>
+                        <div class="form-check-inline">
+                            <label class="form-check-label">
+                                <input type="checkbox" class="form-check-input" id="modal-rightlight" value:"true">Direita
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <label class="col-md-4" for="tittle">Trajeto</label>
+                        <div class="form-check-inline">
+                            <label class="form-check-label">
+                                <input type="checkbox" class="form-check-input" id="modal-onstraight-straight" value:"true">Reta
+                            </label>
+                        </div>
+                        <div class="form-check-inline">
+                            <label class="form-check-label">
+                                <input type="checkbox" class="form-check-input" id="modal-onstraight-turn" value:"true">Curva
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" id="cancel-event" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-success" id="insert-event">Insert</button>
+                <button type="button" class="btn btn-danger" id="remove-event">Remove</button>
+
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<script src="~/lib/leaflet/leaflet-0.7.3.js"></script>
+<script src="~/js/leaflet_awesome_number_markers.js"></script>
+<script src="~/js/configPoints.js"></script>

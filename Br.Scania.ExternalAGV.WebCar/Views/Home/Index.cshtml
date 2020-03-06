@@ -1,0 +1,167 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<style>
+    .btn {
+        width: 100px;
+        margin: 10px;
+    }
+
+</style>
+
+
+<div class="text-center">
+    <h2 class="display-4">Humble CAR</h2>
+</div>
+
+<div class="row" style="margin:2px;">
+    <div class="text-center col-xl-6" style="border:solid;">
+        <h4 class="display-10">Automático / Manual</h4>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input automan" type="radio" name="autoRadioOptions" value="1">
+            <label class="form-check-label" for="autoRadio1">Automático</label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input class="form-check-input automan" type="radio" name="autoRadioOptions" value="0">
+            <label class="form-check-label" for="autoRadio2">Manual</label>
+        </div>
+        <p></p>
+    </div>
+</div>
+<div class="align-content-center row" style="margin:2px;">
+    <div class="text-center col-xl-2 col-lg-4 col-sm-12" style="border:solid;" id="btnCmdAuto">
+        <h4 class="display-10">Automático</h4>
+        <p></p>
+        <div class="align-content-center col-xl-12">
+            Velocidade Manual: <input type="text" name="velManu"><br>
+        </div>
+        <div class="align-content-center col-xl-12">
+            Velocidade Manual: <input type="text" name="velManu"><br>
+        </div>
+        <p></p>
+        <button type="button" class="btn btn-success" id="btnOn">Liga</button>
+        <button type="button" class="btn btn-danger" id="btnOff" disabled>Desliga</button>
+        <p></p>
+    </div>
+    <div class="text-center col-xl-2 col-lg-4 " style="border:solid;" id="btnCmdMan">
+        <p></p>
+        <div class="row align-content-center">
+            <div class="align-content-center col-xl-12">
+                Velocidade Manual: <input type="text" name="velManu"><br>
+            </div>
+            <div class="align-content-center  col-xl-12">
+                <button type="button" class="btn man btn-info" id="btnFoward">Avança</button>
+            </div>
+            <div class="align-content-center  col-xl-12">
+                <button type="button" class="btn man btn-info" id="btnLeft">Esquerda</button>
+                <button type="button" class="btn man btn-info" id="btnRight">Direita</button>
+            </div>
+            <div class="align-content-center  col-xl-12">
+                <button type="button" class="btn man btn-info" id="btnReverse">Recua</button>
+            </div>
+        </div>
+        <p></p>
+    </div>
+    <div class="col-xl-2 col-lg-4 " style="border:solid;">
+        <div class="row">
+            <div class="col-xl-6 col-6">
+                <h4 class="display-10">Status</h4>
+                <div class="col-xl-12 col-sm-12">
+                    <input checked="checked" name="answer" type="radio" value="true" />
+                    <label>Status 01</label>
+                </div>
+                <div class="col-xl-12 col-sm-12">
+                    <input checked="checked" name="answer" type="radio" value="true" />
+                    <label>Status 01</label>
+                </div>
+                <div class="col-xl-12 col-sm-12">
+                    <input checked="checked" name="answer" type="radio" value="true" />
+                    <label>Status 01</label>
+                </div>
+                <div class="col-xl-12 col-sm-12">
+                    <input checked="checked" name="answer" type="radio" value="true" />
+                    <label>Status 01</label>
+                </div>
+                <div class="col-xl-12 col-sm-12">
+                    <input checked="checked" name="answer" type="radio" value="true" />
+                    <label>Status 01</label>
+                </div>
+                <div class="col-xl-12 col-sm-12">
+                    <input checked="checked" name="answer" type="radio" value="true" />
+                    <label>Status 01</label>
+                </div>
+                <div class="col-xl-12 col-sm-12">
+                    <input checked="checked" name="answer" type="radio" value="true" />
+                    <label>Status 01</label>
+                </div>
+                <div class="col-xl-12 col-sm-12">
+                    <input checked="checked" name="answer" type="radio" value="true" />
+                    <label>Status 01</label>
+                </div>
+                <div class="col-xl-12 col-sm-12">
+                    <input checked="checked" name="answer" type="radio" value="true" />
+                    <label>Status 01</label>
+                </div>
+                <div class="col-xl-12 col-sm-12">
+                    <input checked="checked" name="answer" type="radio" value="true" />
+                    <label>Status 01</label>
+                </div>
+                <div class="col-xl-12 col-sm-12">
+                    <input checked="checked" name="answer" type="radio" value="true" />
+                    <label>Status 01</label>
+                </div>
+            </div>
+            <div class="col-xl-6 col-6">
+                <h4 class="display-10">Status</h4>
+                <div class="col-xl-12 col-sm-12">
+                    <input checked="checked" name="answer" type="radio" value="true" />
+                    <label>Status 01</label>
+                </div>
+                <div class="col-xl-12 col-sm-12">
+                    <input checked="checked" name="answer" type="radio" value="true" />
+                    <label>Status 01</label>
+                </div>
+                <div class="col-xl-12 col-sm-12">
+                    <input checked="checked" name="answer" type="radio" value="true" />
+                    <label>Status 01</label>
+                </div>
+                <div class="col-xl-12 col-sm-12">
+                    <input checked="checked" name="answer" type="radio" value="true" />
+                    <label>Status 01</label>
+                </div>
+                <div class="col-xl-12 col-sm-12">
+                    <input checked="checked" name="answer" type="radio" value="true" />
+                    <label>Status 01</label>
+                </div>
+                <div class="col-xl-12 col-sm-12">
+                    <input checked="checked" name="answer" type="radio" value="true" />
+                    <label>Status 01</label>
+                </div>
+                <div class="col-xl-12 col-sm-12">
+                    <input checked="checked" name="answer" type="radio" value="true" />
+                    <label>Status 01</label>
+                </div>
+                <div class="col-xl-12 col-sm-12">
+                    <input checked="checked" name="answer" type="radio" value="true" />
+                    <label>Status 01</label>
+                </div>
+                <div class="col-xl-12 col-sm-12">
+                    <input checked="checked" name="answer" type="radio" value="true" />
+                    <label>Status 01</label>
+                </div>
+                <div class="col-xl-12 col-sm-12">
+                    <input checked="checked" name="answer" type="radio" value="true" />
+                    <label>Status 01</label>
+                </div>
+                <div class="col-xl-12 col-sm-12">
+                    <input checked="checked" name="answer" type="radio" value="true" />
+                    <label>Status 01</label>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<script src="~/js/agv.js"></script>

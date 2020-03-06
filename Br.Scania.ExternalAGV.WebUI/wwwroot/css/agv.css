@@ -1,0 +1,12 @@
+﻿body {
+}
+
+#map {
+    height: 400px;
+    width: 60%;
+}
+
+#insert-route {
+    padding: 5px;
+    margin-top: 20px;
+}
